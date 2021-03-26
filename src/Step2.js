@@ -1,6 +1,7 @@
 //Step2.js
 import React from 'react';
-import { Typography } from '@material-ui/core';
+import { Checkbox, FormControlLabel, Typography } from '@material-ui/core';
+
 import { MainContainer } from './components/MainContainer';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
@@ -21,10 +22,12 @@ const schema = yup.object().shape({
 export const Step2 = () => {
   const history = useHistory();
 
-  const { register, handleSubmit, errors, watch } = useForm({
+  const { register, handleSubmit, watch, errors } = useForm({
     mode: 'onBlur',
     resolver: yupResolver(schema),
   });
+
+  const hasPhone = watch('hasPhone');
 
   const onSubmit = (data) => {
     history.push('/step3');
@@ -46,6 +49,23 @@ export const Step2 = () => {
           error={!!errors.email}
           helperText={errors?.email?.message}
         />
+
+        <FormControlLabel
+          control={
+            <Checkbox name="hasPhone" inputRef={register} color="primary" />
+          }
+          label="Do you have a phone"
+        />
+        {hasPhone && (
+          <Input
+            ref={register}
+            id="phoneNumber"
+            type="tel"
+            label="Phone Number"
+            name="phoneNumber"
+          />
+        )}
+
         <PrimaryButton>Next</PrimaryButton>
       </Form>
     </MainContainer>
