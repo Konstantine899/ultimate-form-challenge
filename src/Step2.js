@@ -6,6 +6,10 @@ import { MainContainer } from './components/MainContainer';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 import * as yup from 'yup';
+import {
+  parsePhoneNumber,
+  parsePhoneNumberFromString,
+} from 'libphonenumber-js';
 
 import { Form } from './components/Form';
 import { Input } from './components/Input';
@@ -33,6 +37,14 @@ export const Step2 = () => {
     history.push('/step3');
   };
 
+  const normalizePhoneNumber = (value) => {
+    const phoneNumber = parsePhoneNumberFromString(value);
+    if (!phoneNumber) {
+      return value;
+    }
+    return phoneNumber.formatInternational();
+  };
+
   return (
     <MainContainer>
       <Typography component="h2" variant="h5">
@@ -57,13 +69,19 @@ export const Step2 = () => {
           label="Do you have a phone"
         />
         {hasPhone && (
-          <Input
-            ref={register}
-            id="phoneNumber"
-            type="tel"
-            label="Phone Number"
-            name="phoneNumber"
-          />
+          <>
+            <h4>Введит ваш телефонный номер</h4>
+            <Input
+              ref={register}
+              id="phoneNumber"
+              type="tel"
+              label="Phone Number"
+              name="phoneNumber"
+              onChange={(event) => {
+                event.target.value = normalizePhoneNumber(event.target.value);
+              }}
+            />
+          </>
         )}
 
         <PrimaryButton>Next</PrimaryButton>
