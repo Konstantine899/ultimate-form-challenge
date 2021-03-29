@@ -6,15 +6,13 @@ import { MainContainer } from './components/MainContainer';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 import * as yup from 'yup';
-import {
-  parsePhoneNumber,
-  parsePhoneNumberFromString,
-} from 'libphonenumber-js';
+import { parsePhoneNumberFromString } from 'libphonenumber-js';
 
 import { Form } from './components/Form';
 import { Input } from './components/Input';
 import { PrimaryButton } from './components/PrimaryButton';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useData } from './Data.Context';
 
 const schema = yup.object().shape({
   email: yup
@@ -25,8 +23,14 @@ const schema = yup.object().shape({
 
 export const Step2 = () => {
   const history = useHistory();
+  const { data, setValues } = useData();
 
   const { register, handleSubmit, watch, errors } = useForm({
+    defaultValues: {
+      email: data.email,
+      hasPhone: data.hasPhone,
+      phoneNumber: data.phoneNumber,
+    },
     mode: 'onBlur',
     resolver: yupResolver(schema),
   });
@@ -35,6 +39,7 @@ export const Step2 = () => {
 
   const onSubmit = (data) => {
     history.push('/step3');
+    setValues(data);
   };
 
   const normalizePhoneNumber = (value) => {
@@ -64,7 +69,13 @@ export const Step2 = () => {
 
         <FormControlLabel
           control={
-            <Checkbox name="hasPhone" inputRef={register} color="primary" />
+            <Checkbox
+              defaultValue={data.hasPhone}
+              defaultChecked={data.hasPhone}
+              name="hasPhone"
+              inputRef={register}
+              color="primary"
+            />
           }
           label="Do you have a phone"
         />

@@ -3,6 +3,8 @@ import { Typography } from '@material-ui/core';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 
+import { useData } from './Data.Context';
+
 import { MainContainer } from './components/MainContainer';
 import { Form } from './components/Form';
 import { FileInput } from './components/FileInput';
@@ -11,10 +13,14 @@ import { useHistory } from 'react-router';
 
 export const Step3 = () => {
   const history = useHistory();
-  const { control, handleSubmit } = useForm();
+  const { data, setValues } = useData();
+  const { control, handleSubmit } = useForm({
+    defaultValues: { files: data.files },
+  });
 
   const onSubmit = (data) => {
     history.push('./result');
+    setValues(data);
   };
   return (
     <MainContainer>
